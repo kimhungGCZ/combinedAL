@@ -131,6 +131,7 @@
         "2014-01-28 13:55:00",
         "2014-02-08 14:30:00"
     ],
+	"realKnownCause/new_data_moisture.csv": [],
     "realKnownCause/nyc_taxi.csv": [
         "2014-11-01 19:00:00",
         "2014-11-27 15:30:00",

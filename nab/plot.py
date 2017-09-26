@@ -91,9 +91,9 @@ class PlotNAB(object):
 
 
   @staticmethod
-  def _plotly_sign_in(py, username=None, apiKey=None):
+  def _plotly_sign_in(py, username="kimhung1990", apiKey="Of6D1v3klVr2tWI2piK8"):
     try:
-      apiKey = apiKey if apiKey else os.environ["PLOTLY_API_KEY"]
+      apiKey = "Of6D1v3klVr2tWI2piK8" #apiKey if apiKey else os.environ["PLOTLY_API_KEY"]
     except:
       print ("Missing PLOTLY_API_KEY environment variable. If you have a "
         "key, set it with $ export PLOTLY_API_KEY=api_key\n"
@@ -101,7 +101,7 @@ class PlotNAB(object):
         "http://www.plot.ly")
       raise OSError("Missing API key.")
     try:
-      username = username if username else os.environ["PLOTLY_USERNAME"]
+      username = "kimhung1990"#username if username else os.environ["PLOTLY_USERNAME"]
     except:
       print ("Missing PLOTLY_USERNAME environment variable. If you have a "
         "username, set it with $ export PLOTLY_USERNAME=username\n"
@@ -252,7 +252,7 @@ class PlotNAB(object):
     layoutArgs = {
         "title": title,
         "font": {"size": fontSize},
-        "showlegend": False,
+        "showlegend": True,
         "width": width,
         "height": height,
         "xaxis": XAxis(
@@ -308,8 +308,8 @@ class PlotNAB(object):
     """
 
     if scoreProfile is (not "standard"
-                    or not "reward_low_fn_rate"
-                    or not "reward_low_fp_rate"):
+                    or not "reward_low_FN_rate"
+                    or not "reward_low_FP_rate"):
       raise ValueError("Invalid scoring profile. Must be one of \'standard\' "
                        "or \'reward low fn rate\' or \'reward low fp rate\'.")
 

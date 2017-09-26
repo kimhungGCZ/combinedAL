@@ -23,35 +23,52 @@ generate example plots.
 """
 
 from nab.plot import PlotNAB
-
+import os
 
 
 if __name__ == "__main__":
+    baseDataDir = "../NAB/data/realKnownCause"
+    dataDirTree = os.walk(baseDataDir)
+    dirNames = []
+    fullFileNames = []
+    dataFiles = ()
+    dataNames = ()
+
+    for i, dirDescr in enumerate(dataDirTree):
+        for fileName in dirDescr[2]:
+            fullFileNames.append(dirDescr[0] + "/" + fileName)
+
+    for fileNumber, fullFileName in enumerate(fullFileNames, start=1):
+        print("-----------------------------------------")
+        fullFileName = fullFileName.split('/NAB/data/')[1]
+        print("[ " + str(fileNumber) + " ] " + fullFileName)
+        dataFiles = dataFiles + (fullFileName,)
+        dataNames = dataNames + (fullFileName,)
 
   # To use this script modify one of the code samples below.
 
   # Sample 1: shows how to plot a set of raw data files with their labels.
   # You can optionally show the windows or probationary period.
 
-  dataFiles = (
-      "realKnownCause/machine_temperature_system_failure.csv",
-      "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv")
-  dataNames = (
-      "Machine Temperature Sensor Data",
-      "AWS Cloudwatch CPU Utilization Data")
+  # dataFiles = (
+  #     "realKnownCause/new_data_moisture.csv",
+  #     "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv")
+  # dataNames = (
+  #     "Moisture Sensor Data",
+  #     "AWS Cloudwatch CPU Utilization Data")
+  #
+    assert len(dataFiles) == len(dataNames)
 
-  assert len(dataFiles) == len(dataNames)
-
-  for i in xrange(len(dataFiles)):
-    dataPlotter = PlotNAB(
-        dataFile=dataFiles[i],
-        dataName=dataNames[i],
-        offline=True,
-    )
-    dataPlotter.plot(
+    for i in xrange(len(dataFiles)):
+        dataPlotter = PlotNAB(
+            dataFile=dataFiles[i],
+            dataName=dataNames[i],
+            offline=True
+        )
+        dataPlotter.plot(
         withLabels=True,
-        withWindows=False,
-        withProbation=False)
+        withWindows=True,
+        withProbation=True)
 
 
   # Sample 2: to plot the results of running one or more detectors uncomment
@@ -60,36 +77,26 @@ if __name__ == "__main__":
   # optionally show the point labels, windows or probationary period. You can
   # also use one of the non-standard profiles.
 
-  # dataFiles = (
-  #     "realKnownCause/machine_temperature_system_failure.csv",
-  #     "realKnownCause/ambient_temperature_system_failure.csv"
-  # )
-  # dataNames = (
-  #     "Machine Temperature Sensor Data",
-  #     "Ambient Temperature System Failure Data"
-  # )
-  # detectors=["numenta", "null"]
-  #
-  # assert len(dataFiles) == len(dataNames)
-  #
-  # # Create the list of result filenames for each detector
-  # allResultsFiles = []
-  # for f in dataFiles:
-  #   resultFiles = []
-  #   for d in detectors:
-  #     filename = d + "/"+f.replace("/","/"+d+"_")
-  #     resultFiles.append(filename)
-  #   allResultsFiles.append(resultFiles)
-  #
-  # # Now plot everything
-  # for i in range(len(dataFiles)):
-  #   dataPlotter = PlotNAB(
-  #       dataFile=dataFiles[i],
-  #       dataName=dataNames[i])
-  #   dataPlotter.plotMultipleDetectors(
-  #       allResultsFiles[i],
-  #       detectors=detectors,
-  #       scoreProfile="standard",
-  #       withLabels=False,
-  #       withWindows=True,
-  #       withProbation=True)
+
+    # detectors=["numenta"]
+    # assert len(dataFiles) == len(dataNames)
+    #
+    # allResultsFiles = []
+    # for f in dataFiles:
+    #     resultFiles = []
+    #     for d in detectors:
+    #         filename = d + "/"+f.replace("/","/"+d+"_")
+    #         resultFiles.append(filename)
+    #     allResultsFiles.append(resultFiles)
+    #
+    # for i in range(len(dataFiles)):
+    #     dataPlotter = PlotNAB(
+    #         dataFile=dataFiles[i],
+    #         dataName=dataNames[i])
+    #     dataPlotter.plotMultipleDetectors(
+    #         allResultsFiles[i],
+    #         detectors=detectors,
+    #         scoreProfile="standard",
+    #         withLabels=True,
+    #         withWindows=True,
+    #         withProbation=True)

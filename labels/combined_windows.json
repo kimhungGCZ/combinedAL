@@ -4,6 +4,8 @@
     "artificialNoAnomaly/art_daily_small_noise.csv": [],
     "artificialNoAnomaly/art_flatline.csv": [],
     "artificialNoAnomaly/art_noisy.csv": [],
+	"realKnownCause/new_data_moisture.csv": [
+    ],
     "artificialWithAnomaly/art_daily_flatmiddle.csv": [
         [
             "2014-04-10 07:15:00.000000",

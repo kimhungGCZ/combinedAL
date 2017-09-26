@@ -40,7 +40,7 @@ def median_absolute_deviation(timeseries):
   if median_deviation == 0:
     return False
 
-  test_statistic = demedianed.iget(-1) / median_deviation
+  test_statistic = demedianed.iat[-1] / median_deviation
 
   # Completely arbitary...triggers if the median deviation is
   # 6 times bigger than the median
@@ -117,7 +117,7 @@ def stddev_from_moving_average(timeseries):
   expAverage = pandas.stats.moments.ewma(series, com=50)
   stdDev = pandas.stats.moments.ewmstd(series, com=50)
 
-  return abs(series.iget(-1) - expAverage.iget(-1)) > 3 * stdDev.iget(-1)
+  return abs(series.iat[-1] - expAverage.iat[-1]) > 3 * stdDev.iat[-1]
 
 
 def mean_subtraction_cumulation(timeseries):
@@ -132,7 +132,7 @@ def mean_subtraction_cumulation(timeseries):
   stdDev = series[0:len(series) - 1].std()
   expAverage = pandas.stats.moments.ewma(series, com=15)
 
-  return abs(series.iget(-1)) > 3 * stdDev
+  return abs(series.iat[-1]) > 3 * stdDev
 
 
 def least_squares(timeseries):

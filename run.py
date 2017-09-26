@@ -132,9 +132,9 @@ if __name__ == "__main__":
   parser.add_argument("-d", "--detectors",
                     nargs="*",
                     type=str,
-                    default=["null", "numenta", "random", "skyline",
+                    default=["null", "numenta", "numentaTM", "random",
                              "bayesChangePt", "windowedGaussian", "expose",
-                             "relativeEntropy"],
+                             "relativeEntropy", "knncad","contextOSE","skyline"],
                     help="Comma separated list of detector(s) to use, e.g. "
                          "null,numenta")
 
@@ -208,3 +208,4 @@ if __name__ == "__main__":
 
   if args.skipConfirmation or checkInputs(args):
     main(args)
+

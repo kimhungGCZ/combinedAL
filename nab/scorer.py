@@ -335,7 +335,7 @@ def scoreCorpus(threshold, args):
 
     # relativePath: raw dataset file,
     # e.g. 'artificialNoAnomaly/art_noisy.csv'
-    relativePath = convertResultsPathToDataPath( \
+    relativePath = convertResultsPathToDataPath(
       os.path.join(detectorName, relativePath))
 
     # outputPath: dataset results file,
