@@ -25,8 +25,9 @@ def getCSVData(dataPath):
         return
     return data
 
-DATA_FILE = 'dta_tsing'
-#DATA_FILE = 'data_1B3B8D'
+
+#DATA_FILE = 'dta_tsing'
+DATA_FILE = 'data_1B3B8D'
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -41,16 +42,16 @@ DATA_FILE = 'dta_tsing'
 #       # Free lock to release next thread
 #       threadLock.release()
 start = time.time()
-dataPath_result_bayes = './results/bayesChangePt/realKnownCause/bayesChangePt_'+DATA_FILE+'.csv'
-dataPath_result_relativeE = './results/relativeEntropy/realKnownCause/relativeEntropy_'+DATA_FILE+'.csv'
-dataPath_result_numenta = './results/numenta/realKnownCause/numenta_'+DATA_FILE+'.csv'
-dataPath_result_knncad = './results/knncad/realKnownCause/knncad_'+DATA_FILE+'.csv'
-dataPath_result_WindowGaussian = './results/windowedGaussian/realKnownCause/windowedGaussian_'+DATA_FILE+'.csv'
-dataPath_result_contextOSE = './results/contextOSE/realKnownCause/contextOSE_'+DATA_FILE+'.csv'
-dataPath_result_skyline = './results/skyline/realKnownCause/skyline_'+DATA_FILE+'.csv'
+dataPath_result_bayes = './results/bayesChangePt/realKnownCause/bayesChangePt_' + DATA_FILE + '.csv'
+dataPath_result_relativeE = './results/relativeEntropy/realKnownCause/relativeEntropy_' + DATA_FILE + '.csv'
+dataPath_result_numenta = './results/numenta/realKnownCause/numenta_' + DATA_FILE + '.csv'
+dataPath_result_knncad = './results/knncad/realKnownCause/knncad_' + DATA_FILE + '.csv'
+dataPath_result_WindowGaussian = './results/windowedGaussian/realKnownCause/windowedGaussian_' + DATA_FILE + '.csv'
+dataPath_result_contextOSE = './results/contextOSE/realKnownCause/contextOSE_' + DATA_FILE + '.csv'
+dataPath_result_skyline = './results/skyline/realKnownCause/skyline_' + DATA_FILE + '.csv'
 dataPath_result_ODIN = './results/ODIN_result.csv'
 # dataPath_result = './results/skyline/realKnownCause/skyline_'+DATA_FILE+'.csv'
-dataPath_raw = './data/realKnownCause/'+DATA_FILE+'.csv'
+dataPath_raw = './data/realKnownCause/' + DATA_FILE + '.csv'
 
 result_dta_bayes = getCSVData(dataPath_result_bayes) if dataPath_result_bayes else None
 result_dta_numenta = getCSVData(dataPath_result_numenta) if dataPath_result_numenta else None
@@ -100,9 +101,10 @@ raw_matrix = np.array([[breakpoint_candidates, result_dta_skyline.anomaly_score]
 # raw_name_matrix = np.array([["EDGE Algorithm", "Skyline Algorithm"], ["EDGE Algorithm", "Numenta Algorithm"], ["EDGE Algorithm", "ContextOSE Algorithm"]])
 raw_name_matrix = np.array([["EDGE Algorithm", "Skyline Algorithm"], ["EDGE Algorithm", "Numenta Algorithm"],
                             ["EDGE Algorithm", "ContextOSE Algorithm"],
-                            ["Bayes Algorithm", "Skyline Algorithm"],["Bayes Algorithm", "Numenta Algorithm"],
+                            ["Bayes Algorithm", "Skyline Algorithm"], ["Bayes Algorithm", "Numenta Algorithm"],
                             ["Bayes Algorithm", "ContextOSE Algorithm"],
-                            ["Relative Entropy Algorithm", "Skyline Algorithm"],["Relative Entropy Algorithm", "Numenta Algorithm"],
+                            ["Relative Entropy Algorithm", "Skyline Algorithm"],
+                            ["Relative Entropy Algorithm", "Numenta Algorithm"],
                             ["Relative Entropy Algorithm", "ContextOSE Algorithm"]])
 score_matrix = []
 name_coff_metrix = []
@@ -135,25 +137,50 @@ pool = ThreadPool(processes=4)
 final_f = []
 final_combination = []
 
+################## BUILDING THE METRIC ################################
 # for index, value in enumerate(score_matrix):
 #     new_data = result_dta_numenta.copy()
 #     new_data.anomaly_score = value
 #     # engine.anomaly_detection(result_dta, raw_dta)
-#     async_result = pool.apply_async(engine.anomaly_detection_v2,
-#                                     (new_data, raw_dta, name_coff_metrix[index], DATA_FILE))  # tuple of args for foo
+#     async_result = pool.apply_async(engine.anomaly_detection,
+#                                     (new_data, raw_dta, name_coff_metrix[index], 0.05, DATA_FILE, 0))  # tuple of args for foo
 #     return_val = async_result.get()
 #     final_f.append(return_val)
 #     final_combination.append(name_coff_metrix[index])
-
-final_index = 1# np.argsort(final_f)[-1]
+#     print("_________________________________________________________________________________________")
+#
+# final_index = np.argsort(final_f)[-1]
 # filed_name = final_combination[final_index]
 #
 # print "%%%%%%%%%%%%%%%%%%%%%%%%______BEST CHOICE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 # print "Metric %d: %f * %s + %f * %s " % (final_index, filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
-alpha = 0.1
+
+############### To debug specific combination:############################
+final_index = 18
+alpha = 0.05
+print("Decay Value: %f" % alpha)
 new_data = result_dta_numenta.copy()
 new_data.anomaly_score = score_matrix[final_index]
-engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index],alpha,DATA_FILE, 0)
+start_main_al = time.time()
+engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 0)
+end_main_al = time.time()
+print("Execution time: {}".format(end_main_al - start_main_al));
+print("_________________________________________________________________________________________")
+
+####### TEST THE DECAY VALUE
+# while alpha < 0.5:
+#     print("Decay Value: %f" %alpha)
+#     new_data = result_dta_numenta.copy()
+#     new_data.anomaly_score = score_matrix[final_index]
+#     start_main_al = time.time()
+#     engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 0)
+#     end_main_al = time.time()
+#     print("Execution time: {}".format(end_main_al - start_main_al));
+#     print("_________________________________________________________________________________________")
+#     if alpha < 0.1:
+#         alpha = alpha + 0.01
+#     else:
+#         alpha = alpha + 0.05
 
 
 end = time.time()

@@ -20,8 +20,9 @@ request.add_header("Authorization", "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
 result = urllib2.urlopen(request)
 tem_data = json.load(result.fp)
 tem_data.sort(key=lambda x: x[0])
-data = [i[1] for i in tem_data if i[1]!= None]
-
+data = [i[1] for index,i in enumerate(tem_data) if i[1]!= None and index not in range(581,601)]
+plt.plot(data)
+plt.show()
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 time_array =  [datetime.datetime.fromtimestamp(ts - 10000*i).strftime('%Y-%m-%d %H:%M:%S') for i in data]

@@ -158,7 +158,7 @@ def find_inverneghboor_of_point(tree,X, index_ano, limit_size):
     anomaly_point = X[index_ano]
     flag_stop = 0
     flag_round = 2
-    while flag_stop <= 3:
+    while flag_stop <= limit_size:
         len_start = len(inverse_neighboor)
         dist, ind = tree.query([anomaly_point], k=flag_round)
         for index_dist, i in enumerate(ind[0]):
@@ -166,12 +166,12 @@ def find_inverneghboor_of_point(tree,X, index_ano, limit_size):
                 if inverse_neighboor != []:
                     if i not in [in_key[1] for in_key in inverse_neighboor]:
                         in_dist, in_ind = tree.query([X[i]], k=flag_round)
-                        if ((index_ano in in_ind[0])) or (check_in_array(in_ind[0], inverse_neighboor) == 1):
+                        if ((index_ano in in_ind[0])) :#or (check_in_array(in_ind[0], inverse_neighboor) == 1):
                             inverse_neighboor.append(
                                 [index_dist, i])  # np.append(inverse_neighboor, [index_dist, i], axis=0)
                 else:
                     in_dist, in_ind = tree.query([X[i]], k=flag_round)
-                    if ((index_ano in in_ind[0])) or (check_in_array(in_ind[0], inverse_neighboor) == 1):
+                    if ((index_ano in in_ind[0])) :#or (check_in_array(in_ind[0], inverse_neighboor) == 1):
                         inverse_neighboor.append(
                             [index_dist, i])  # np.append(inverse_neighboor, [index_dist, i], axis=0)
         len_stop = len(inverse_neighboor)

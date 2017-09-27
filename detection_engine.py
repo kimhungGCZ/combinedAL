@@ -10,11 +10,15 @@ from sets import Set
 from sklearn.neighbors import DistanceMetric
 import trollius
 import warnings
+from numpy import mean, absolute
 
 warnings.simplefilter('ignore')
 
-groud_trust = [[350, 832],[732, 733, 734, 745, 736, 755, 762, 773, 774, 795]]
-#groud_trust = [[594],[435, 459, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 1194, 1195, 1403, 1438, 1443]]
+# groud_trust = [[350, 832],[732, 733, 734, 745, 736, 755, 762, 773, 774, 795]]
+groud_trust = [[581],
+               [435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418,
+                1423]]
+
 
 def getCSVData(dataPath):
     try:
@@ -24,21 +28,22 @@ def getCSVData(dataPath):
     return data
 
 
+def mad(data, axis=None):
+    return mean(absolute(data - mean(data, axis)), axis)
 
 
-def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_tsing', debug_mode = 0):
-
+def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsing', debug_mode=0):
     if debug_mode == 1:
-        dataPath_result_bayes = './results/bayesChangePt/realKnownCause/bayesChangePt_'+ data_file +'.csv'
-        dataPath_result_relativeE = './results/relativeEntropy/realKnownCause/relativeEntropy_'+ data_file +'.csv'
-        dataPath_result_numenta = './results/numenta/realKnownCause/numenta_'+ data_file +'.csv'
-        dataPath_result_knncad = './results/knncad/realKnownCause/knncad_'+ data_file +'.csv'
-        dataPath_result_WindowGaussian = './results/windowedGaussian/realKnownCause/windowedGaussian_'+ data_file +'.csv'
-        dataPath_result_contextOSE = './results/contextOSE/realKnownCause/contextOSE_'+ data_file +'.csv'
-        dataPath_result_skyline = './results/skyline/realKnownCause/skyline_'+ data_file +'.csv'
+        dataPath_result_bayes = './results/bayesChangePt/realKnownCause/bayesChangePt_' + data_file + '.csv'
+        dataPath_result_relativeE = './results/relativeEntropy/realKnownCause/relativeEntropy_' + data_file + '.csv'
+        dataPath_result_numenta = './results/numenta/realKnownCause/numenta_' + data_file + '.csv'
+        dataPath_result_knncad = './results/knncad/realKnownCause/knncad_' + data_file + '.csv'
+        dataPath_result_WindowGaussian = './results/windowedGaussian/realKnownCause/windowedGaussian_' + data_file + '.csv'
+        dataPath_result_contextOSE = './results/contextOSE/realKnownCause/contextOSE_' + data_file + '.csv'
+        dataPath_result_skyline = './results/skyline/realKnownCause/skyline_' + data_file + '.csv'
         dataPath_result_ODIN = './results/ODIN_result.csv'
         # dataPath_result = './results/skyline/realKnownCause/skyline_data_compare_1.csv'
-        dataPath_raw = './data/realKnownCause/'+ data_file +'.csv'
+        dataPath_raw = './data/realKnownCause/' + data_file + '.csv'
 
         result_dta_bayes = getCSVData(dataPath_result_bayes) if dataPath_result_bayes else None
         result_dta_numenta = getCSVData(dataPath_result_numenta) if dataPath_result_numenta else None
@@ -80,10 +85,24 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
     # Get 5% anomaly point
     # anomaly_index = np.array(np.argsort(result_dta['anomaly_score']))[-five_percentage:]
     anomaly_index = np.array([i for i, value in enumerate(result_dta['anomaly_score']) if value > 3 * std_anomaly_set])
+    MAD_score = mad(result_dta['anomaly_score'])
+    # anomaly_index = np.array([i for i, value in enumerate(result_dta['anomaly_score']) if value > 3*1.4826 * MAD_score])
 
-    #print("Anomaly Point Found", anomaly_index)
+    if debug_mode == 1:
+        cmfunc.plot_data_all('EXAMINATE DATA SET',
+                             [[range(0, len(raw_dta.value)), raw_dta.value],
+                              [groud_trust[1], raw_dta.value[groud_trust[1]]],
+                              [groud_trust[0], raw_dta.value[groud_trust[0]]]],
+                             ['lines', 'markers', 'markers'],
+                             ['Raw data', 'Labeled Anomaly Point', 'Labeled Change Point'])
+
+        cmfunc.plot_data_all('Abnormal Choosing Result',
+                             [[range(0, len(raw_dta.value)), raw_dta.value],
+                              [anomaly_index, raw_dta.value[anomaly_index]]],
+                             ['lines', 'markers'], ['Raw Data', 'Anomaly points'])
+    # print("Anomaly Point Found", anomaly_index)
     # Decay value is 5%
-    #alpha = 0.1
+    # alpha = 0.1
     limit_size = int(1 / alpha)
     # Y is the anomaly spreding and Z is the normal spreading.
     Y = np.zeros(len(result_dta['anomaly_score']))
@@ -111,15 +130,9 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
     normal_index = [i for i, value in enumerate(result_dta['anomaly_score']) if
                     value <= np.percentile(result_dta['anomaly_score'], 20)]
 
-    if (debug_mode == 1):
-        print("Correct Point Found", normal_index)
-        cmfunc.plot_data_all('Normal Choosing Result BEFORE',
-                             [[range(0, len(raw_dta.value)), raw_dta.value],
-                              [normal_index, raw_dta.value[normal_index]]],
-                             ['lines', 'markers'], ['a', 'b'])
     normal_index = np.random.choice(normal_index, int(len(normal_index) * 0.5), replace=False)
     if (debug_mode == 1):
-        cmfunc.plot_data_all('Normal Choosing Result AFTER',
+        cmfunc.plot_data_all('Normal Choosing Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [normal_index, raw_dta.value[normal_index]]],
                              ['lines', 'markers'], ['a', 'b'])
@@ -141,7 +154,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
 
     final_score = map(lambda x: 0 if x < 0 else x, result_dta.anomaly_score);
     final_score = (final_score - np.min(final_score)) / (
-    np.max(final_score) - np.min(final_score))
+        np.max(final_score) - np.min(final_score))
 
     ### Draw final result
     #### Draw step result ####
@@ -156,18 +169,18 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
                           'Numenta Result', 'ContextOSE Result', 'Our Result'),
                          ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
                           'Numenta Result', 'ContextOSE Result', 'Our Result'])
-        cmfunc.plot_data('Zoomed Final Result',
-                         [raw_dta.value[720:800], result_dta_bayes.anomaly_score[720:800],
-                          breakpoint_candidates[720:800],
-                          result_dta_relativeE.anomaly_score[720:800], result_dta_skyline.anomaly_score[720:800],
-                          result_dta_numenta.anomaly_score[720:800], result_dta_contextOSE.anomaly_score[720:800],
-                          final_score[720:800]], [],
-                         ('Raw Data[720:800]', 'Bayes Result[720:800]', 'EDGE Result [720:800]',
-                          'Relative Entropy Result [720:800]', 'Skyline Result [720:800]', 'Numenta Result[720:800]',
-                          'ContextOSE Result [720:800]',
-                          'Our Result[720:800]'),
-                         ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
-                          'Numenta Result', 'ContextOSE Result', 'Our Result'])
+        # cmfunc.plot_data('Zoomed Final Result',
+        #                  [raw_dta.value[720:800], result_dta_bayes.anomaly_score[720:800],
+        #                   breakpoint_candidates[720:800],
+        #                   result_dta_relativeE.anomaly_score[720:800], result_dta_skyline.anomaly_score[720:800],
+        #                   result_dta_numenta.anomaly_score[720:800], result_dta_contextOSE.anomaly_score[720:800],
+        #                   final_score[720:800]], [],
+        #                  ('Raw Data[720:800]', 'Bayes Result[720:800]', 'EDGE Result [720:800]',
+        #                   'Relative Entropy Result [720:800]', 'Skyline Result [720:800]', 'Numenta Result[720:800]',
+        #                   'ContextOSE Result [720:800]',
+        #                   'Our Result[720:800]'),
+        #                  ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
+        #                   'Numenta Result', 'ContextOSE Result', 'Our Result'])
         cmfunc.plot_data('Step Result', [raw_dta.value, backup_draw.anomaly_score, Y, Z, final_score], [],
                          (
                              'Raw Data', 'Metric of Score', 'Spreading Anomaly Score', 'Spreading Normal Score',
@@ -216,43 +229,48 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
     uniques = new_array
     std_example_data = []
     std_example_outer = []
-    detect_final_result = [[],[]]
+    detect_final_result = [[], []]
     for detect_pattern in uniques:
-        #rest_anomaly_set = [i for i in anomaly_set if i not in list(detect_pattern)]
+        # rest_anomaly_set = [i for i in anomaly_set if i not in list(detect_pattern)]
+        list_of_anomaly = [int(j) for i in anomaly_group_set for j in i]
         example_data = [i for i in (
-            list(raw_dta.value.values[int(min(detect_pattern) - 10): int(min(detect_pattern))]) + list(
-                raw_dta.value.values[int(max(detect_pattern) + 1): int(max(detect_pattern) + 11)]))]
-        in_std_with_Anomaly = np.std(example_data + list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern) + 1)]))
-        std_example_data.append(in_std_with_Anomaly)
-        example_data_iner = list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern)) + 1])
-        example_data_outer = []
-        for j in example_data:
-            if j not in example_data_iner:
-                example_data_outer.append(j)
-            else:
-                example_data_iner.remove(j)
+            list(raw_dta.value.values[list(z for z in range(int(min(detect_pattern) - 3), int(min(detect_pattern))) if z not in list_of_anomaly)]) + list(
+                raw_dta.value.values[list(z for z in range(int(max(detect_pattern) + 1), int(max(detect_pattern) + 4)) if z not in list_of_anomaly)]))]
 
-        in_std_with_NonAnomaly = np.std(example_data_outer)
-        if (in_std_with_Anomaly > 2* in_std_with_NonAnomaly):
+        in_std_with_Anomaly = np.std(
+            example_data + list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern) + 1)]))
+        std_example_data.append(in_std_with_Anomaly)
+
+        example_data_iner = list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern)) + 1])
+
+        in_std_with_NonAnomaly = np.std(example_data)
+        if (in_std_with_Anomaly > 1.5 * in_std_with_NonAnomaly):
             detect_final_result[1].extend(np.array(detect_pattern, dtype=np.int))
         else:
             detect_final_result[0].append(int(np.min(detect_pattern)))
         std_example_outer.append(in_std_with_NonAnomaly)
     final_changepoint_set = detect_final_result[0]
 
-    result_precision = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(final_changepoint_set)) if len(set(final_changepoint_set)) != 0 else 0
+    result_precision = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(
+        set(final_changepoint_set)) if len(set(final_changepoint_set)) != 0 else 0
     result_recall = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(groud_trust[0]))
-    result_f  = float(2*result_precision*result_recall/(result_precision+result_recall)) if (result_precision+result_recall) != 0 else 0
+    result_f = float(2 * result_precision * result_recall / (result_precision + result_recall)) if (
+                                                                                                       result_precision + result_recall) != 0 else 0
     ####################################################################################################################
-    result_precision_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(set(detect_final_result[1])) if len(set(detect_final_result[1])) != 0 else 0
-    result_recall_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(set(groud_trust[1]))
-    result_f_AL  = float(2*result_precision_AL*result_recall_AL/(result_precision_AL+result_recall_AL)) if (result_precision_AL+result_recall_AL) != 0 else 0
+    result_precision_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
+        set(detect_final_result[1])) if len(set(detect_final_result[1])) != 0 else 0
+    result_recall_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
+        set(groud_trust[1]))
+    result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
+                                                                                                                      result_precision_AL + result_recall_AL) != 0 else 0
     ##################################################################################################
-    print "Metric: %f * %s + %f * %s " %(filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
-    print "Change Point Detection - Precision: %d %%, Recall: %d %%, F: %f" %(result_precision, result_recall, result_f)
-    print "Anomaly Detection - Precision: %d %%, Recall: %d %%, F: %f" %(result_precision_AL, result_recall_AL, result_f_AL)
-    print "Total Point: %f" %(np.mean([result_f, result_f_AL]))
-    print("_________________________________________________________________________________________")
+    print "Metric: %f * %s + %f * %s " % (filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
+    print "Change Point Detection - Precision: %d %%, Recall: %d %%, F: %f" % (
+        result_precision, result_recall, result_f)
+    print "Anomaly Detection - Precision: %d %%, Recall: %d %%, F: %f" % (
+        result_precision_AL, result_recall_AL, result_f_AL)
+    print "Total Point: %f" % (np.mean([result_f, result_f_AL]))
+
     Grouping_Anomaly_Points_Result = [[range(0, len(raw_dta.value)), raw_dta.value]]
     Grouping_Anomaly_Points_Result_type = ['lines']
     bar_group_name = ['Raw Data']
@@ -272,10 +290,6 @@ def anomaly_detection(result_dta, raw_dta, filed_name,alpha ,data_file = 'dta_ts
                                   [[bar_group_name, std_example_data], [bar_group_name, std_example_outer]],
                                   name=['With potential anomaly', 'Non potential anomaly'])
     return np.mean([result_f, result_f_AL])
-
-
-
-
 
 # def anomaly_detection_v2(result_dta, raw_dta, filed_name,data_file = 'dta_tsing', debug_mode = 0):
 #
