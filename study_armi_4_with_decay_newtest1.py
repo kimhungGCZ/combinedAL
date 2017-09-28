@@ -26,8 +26,8 @@ def getCSVData(dataPath):
     return data
 
 
-DATA_FILE = 'dta_tsing'
-#DATA_FILE = 'data_1B3B8D'
+#DATA_FILE = 'dta_tsing'
+DATA_FILE = 'data_1B3B8D'
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -136,9 +136,12 @@ from multiprocessing.pool import ThreadPool
 pool = ThreadPool(processes=4)
 final_f = []
 final_combination = []
-
+print "################## SOLELY SCORING STATE-OF-THE-ART ALGORITHMS ################################"
+#engine.calculate_point(DATA_FILE)
+print "################## BUILDING THE METRIC WITH DEFAULT DECAY = 0.05 ################################"
 ################## BUILDING THE METRIC ################################
 # for index, value in enumerate(score_matrix):
+#     start_main_al = time.time()
 #     new_data = result_dta_numenta.copy()
 #     new_data.anomaly_score = value
 #     # engine.anomaly_detection(result_dta, raw_dta)
@@ -147,6 +150,8 @@ final_combination = []
 #     return_val = async_result.get()
 #     final_f.append(return_val)
 #     final_combination.append(name_coff_metrix[index])
+#     end_main_al = time.time()
+#     print("Execution time: {}".format(end_main_al - start_main_al));
 #     print("_________________________________________________________________________________________")
 #
 # final_index = np.argsort(final_f)[-1]
@@ -166,8 +171,9 @@ engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha
 end_main_al = time.time()
 print("Execution time: {}".format(end_main_al - start_main_al));
 print("_________________________________________________________________________________________")
-
+print "%%%%%%%%%%%%%%%%%%%%%%%%______TESTING THE DECAY VALUE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 ####### TEST THE DECAY VALUE
+# alpha = 0.01
 # while alpha < 0.5:
 #     print("Decay Value: %f" %alpha)
 #     new_data = result_dta_numenta.copy()
@@ -181,9 +187,9 @@ print("_________________________________________________________________________
 #         alpha = alpha + 0.01
 #     else:
 #         alpha = alpha + 0.05
-
-
-end = time.time()
-print("Total time: {}".format(end - start))
+#
+#
+# end = time.time()
+# print("Total time: {}".format(end - start))
 
 # do some other stuff in the main process
