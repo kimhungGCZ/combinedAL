@@ -230,7 +230,7 @@ def getCSVData(dataPath):
 def change_after_k_seconds(data, k=1):
     data1 = data[0:len(data) -k]
     data2 = data[k:]
-    return list(map(lambda x: abs(x[1] - x[0]), zip(data1, data2)))
+    return list(map(lambda x: x[1] - x[0], zip(data1, data2)))
 
 def plot_data(charName,data, mode, title = ('Plot 1', 'Plot 2', 'Plot 3', 'Plot 4', 'Plot 5'), name = ['a', 'b', 'c', 'd', 'e', 'f']):
     fig = tools.make_subplots(rows=len(data), cols=1, subplot_titles=title)
@@ -280,7 +280,7 @@ def find_inverneghboor_of_point_1(tree,X, index_ano, anomaly_set, limit_size):
     anomaly_point = X[index_ano]
     flag_stop = 0
     flag_round = 2
-    while flag_stop <= limit_size:
+    while flag_stop <= 3:
         len_start = len(inverse_neighboor)
         dist, ind = tree.query([anomaly_point], k=flag_round)
         for index_dist, i in enumerate(ind[0]):

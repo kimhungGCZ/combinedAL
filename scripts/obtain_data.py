@@ -15,7 +15,7 @@ def getCSVData(dataPath):
         return
     return data
 
-request = urllib2.Request("https://server.humm-box.com/api/devices/1B3B8D/fastmeasures?fields=[content_volume]")
+request = urllib2.Request("https://server.humm-box.com/api/devices/1B3B30/fastmeasures?fields=[content_volume]")
 request.add_header("Authorization", "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2h1bW0tc2VydmVyLmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwNTQ5MjcyODgyOTQ0NjU4MzExNiIsImF1ZCI6IkxMSWVDYXpIVEpTOG9kVW1kaHJHMmVuV3dQaW5yajUxIiwiZXhwIjoxNTEwMDI2NDU1LCJpYXQiOjE1MDY0MjY0NTV9.gma7GCb2-dYiMnJkeapyrd2Y_xhk0Wk_14zS49Yk7Pc")
 result = urllib2.urlopen(request)
 tem_data = json.load(result.fp)
