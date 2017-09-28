@@ -26,8 +26,8 @@ def getCSVData(dataPath):
     return data
 
 
-#DATA_FILE = 'dta_tsing'
-DATA_FILE = 'data_1B3B8D'
+DATA_FILE = 'dta_tsing'
+#DATA_FILE = 'data_1B3B8D'
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -156,13 +156,13 @@ final_combination = []
 # print "Metric %d: %f * %s + %f * %s " % (final_index, filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
 
 ############### To debug specific combination:############################
-final_index = 18
+final_index = 6
 alpha = 0.05
 print("Decay Value: %f" % alpha)
 new_data = result_dta_numenta.copy()
 new_data.anomaly_score = score_matrix[final_index]
 start_main_al = time.time()
-engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 0)
+engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 1)
 end_main_al = time.time()
 print("Execution time: {}".format(end_main_al - start_main_al));
 print("_________________________________________________________________________________________")

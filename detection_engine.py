@@ -14,10 +14,10 @@ from numpy import mean, absolute
 
 warnings.simplefilter('ignore')
 
-# groud_trust = [[350, 832],[732, 733, 734, 745, 736, 755, 762, 773, 774, 795]]
-groud_trust = [[581],
-               [435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418,
-                1423]]
+groud_trust = [[350, 832],[732, 733, 734, 736, 755, 762, 773, 774, 795]]
+# #groud_trust = [[581],
+#                [435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418,
+#                 1423]]
 
 
 def getCSVData(dataPath):
@@ -207,7 +207,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
     new_small_x = 0
     sliding_index = 1
     for index_value, new_small_x in enumerate(anomaly_set):
-        anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point_1(newtree, X, new_small_x, anomaly_set),
+        anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point_1(newtree, X, new_small_x, anomaly_set, limit_size),
                                      dtype=np.int32)
         tmp_array = list(map(lambda x: x[1], anomaly_neighboor))
         if index_value > 0:

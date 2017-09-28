@@ -275,12 +275,12 @@ def plot_data_barchart(charName,data, name = ['a', 'b', 'c', 'd', 'e', 'f']):
     # Working Offline
     plotly.offline.plot(fig, filename=charName)
 
-def find_inverneghboor_of_point_1(tree,X, index_ano, anomaly_set):
+def find_inverneghboor_of_point_1(tree,X, index_ano, anomaly_set, limit_size):
     inverse_neighboor = []
     anomaly_point = X[index_ano]
     flag_stop = 0
     flag_round = 2
-    while flag_stop <= 5:
+    while flag_stop <= limit_size:
         len_start = len(inverse_neighboor)
         dist, ind = tree.query([anomaly_point], k=flag_round)
         for index_dist, i in enumerate(ind[0]):
