@@ -1,3 +1,5 @@
+from fnmatch import filter
+
 import numpy as np
 import pandas as pd
 import math as math
@@ -15,7 +17,9 @@ from numpy import mean, absolute
 warnings.simplefilter('ignore')
 
 groud_trust = [[350, 832], [732, 733, 734, 735, 736, 755, 762, 773, 774, 795]]
-#groud_trust = [[581,1536],[435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418, 1423]]
+
+
+# groud_trust = [[581,1536],[435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418, 1423]]
 
 
 def getCSVData(dataPath):
@@ -81,14 +85,18 @@ def calculate_point(data_file):
                            ]
     for i in metric_of_algorithm:
         std_of_i = np.std(i[0])
-        detected_result = list([j for j,jvalue in enumerate(i[0]) if jvalue > 3* std_of_i])
-        result_precision_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(detected_result)) if len(set(detected_result)) != 0 else 0
+        detected_result = list([j for j, jvalue in enumerate(i[0]) if jvalue > 3 * std_of_i])
+        result_precision_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(
+            set(detected_result)) if len(set(detected_result)) != 0 else 0
         result_recall_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(groud_trust[1]))
-        result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (result_precision_AL + result_recall_AL) != 0 else 0
+        result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
+                                                                                                                          result_precision_AL + result_recall_AL) != 0 else 0
         print "Algorithm %s: " % (i[1])
-        print "-------- Anomaly Detection: Precision: %f %%, Recall: %f %%, F-score: %f" % (result_precision_AL, result_recall_AL, result_f_AL)
+        print "-------- Anomaly Detection: Precision: %f %%, Recall: %f %%, F-score: %f" % (
+            result_precision_AL, result_recall_AL, result_f_AL)
         print "-------- Change Point Detection Detection: Precision: %f %%, Recall: %f %%, F-score: %f" % (0, 0, 0)
     print "-----------------------------------------------------------------------------------------------------------------------"
+
 
 def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsing', debug_mode=0):
     if debug_mode == 1:
@@ -133,6 +141,21 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
 
         breakpoint_candidates = np.insert(breakpoint_candidates, 0, 0)
 
+    # dao ham bac 2
+    sec_der = cmfunc.change_after_k_seconds_with_abs(raw_dta.value, k=1)
+
+    median_sec_der = np.median(sec_der)
+    std_sec_der = np.std(sec_der)
+
+    breakpoint_candidates = list(map(
+        lambda x: (x[1] - median_sec_der) - np.abs(std_sec_der) if (x[1] - median_sec_der) - np.abs(
+            std_sec_der) > 0 else 0,
+        enumerate(sec_der)))
+    breakpoint_candidates = (breakpoint_candidates - np.min(breakpoint_candidates)) / (
+        np.max(breakpoint_candidates) - np.min(breakpoint_candidates))
+
+    breakpoint_candidates = np.insert(breakpoint_candidates, 0, 0)
+
     dta_full = result_dta
 
     dta_full.value.index = result_dta.timestamp
@@ -147,14 +170,14 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
     # anomaly_index = np.array([i for i, value in enumerate(result_dta['anomaly_score']) if value > 3*1.4826 * MAD_score])
 
     if debug_mode == 1:
-        cmfunc.plot_data_all('EXAMINATE DATA SET',
+        cmfunc.plot_data_all('graph/' + data_file + '/EXAMINATE DATA SET',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [groud_trust[1], raw_dta.value[groud_trust[1]]],
                               [groud_trust[0], raw_dta.value[groud_trust[0]]]],
                              ['lines', 'markers', 'markers'],
                              ['Raw data', 'Labeled Anomaly Point', 'Labeled Change Point'])
 
-        cmfunc.plot_data_all('Abnormal Choosing Result',
+        cmfunc.plot_data_all('graph/' + data_file + '/Abnormal Choosing Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [anomaly_index, raw_dta.value[anomaly_index]]],
                              ['lines', 'markers'], ['Raw Data', 'Anomaly points'])
@@ -173,10 +196,10 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
     # Calculate Y
     for anomaly_point in anomaly_index:
         if anomaly_point - 1 not in potential_anomaly:
-
-            anomaly_neighboor_detect = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point - 1, limit_size),
-                                         dtype=np.int32)
-            if len(set(anomaly_neighboor_detect[:,1]).intersection(potential_anomaly)) == 0:
+            anomaly_neighboor_detect = np.array(
+                cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point - 1, limit_size),
+                dtype=np.int32)
+            if len(set(anomaly_neighboor_detect[:, 1]).intersection(potential_anomaly)) == 0:
                 anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point, limit_size),
                                              dtype=np.int32)
                 potential_anomaly.extend([x[1] for x in anomaly_neighboor])
@@ -184,9 +207,40 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
                     Y[NN_pair[1]] = Y[NN_pair[1]] + result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha if \
                         result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha > 0 else Y[NN_pair[1]]
             else:
-                result_dta.anomaly_score[anomaly_point] = 0
+                consider_point = np.max(
+                    [i for i in list(set(range(0, anomaly_point - 1)).difference(set(anomaly_neighboor_detect[:, 1])))
+                     if
+                     i not in potential_anomaly])
+                if (raw_dta.value.values[anomaly_point] - raw_dta.value.values[
+                    consider_point] - median_sec_der - std_sec_der > 0):
+                    anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point, limit_size),
+                                                 dtype=np.int32)
+                    potential_anomaly.extend([x[1] for x in anomaly_neighboor])
+                    for NN_pair in anomaly_neighboor:
+                        Y[NN_pair[1]] = Y[NN_pair[1]] + result_dta['anomaly_score'][anomaly_point] - NN_pair[
+                                                                                                         0] * alpha if \
+                            result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha > 0 else Y[NN_pair[1]]
+                else:
+                    result_dta.anomaly_score[anomaly_point] = 0
         else:
-            result_dta.anomaly_score[anomaly_point] = 0
+            anomaly_neighboor_detect = np.array(
+                cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point - 1, limit_size),
+                dtype=np.int32)
+            consider_point = np.max(
+                [i for i in list(set(range(0, anomaly_point - 1)).difference(set(anomaly_neighboor_detect[:, 1]))) if
+                 i not in potential_anomaly])
+
+            if (raw_dta.value.values[anomaly_point] - raw_dta.value.values[
+                consider_point] - median_sec_der - std_sec_der > 0):
+                anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point, limit_size),
+                                             dtype=np.int32)
+                potential_anomaly.extend([x[1] for x in anomaly_neighboor])
+                for NN_pair in anomaly_neighboor:
+                    Y[NN_pair[1]] = Y[NN_pair[1]] + result_dta['anomaly_score'][anomaly_point] - NN_pair[
+                                                                                                     0] * alpha if \
+                        result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha > 0 else Y[NN_pair[1]]
+            else:
+                result_dta.anomaly_score[anomaly_point] = 0
 
     backup_draw = result_dta.copy()
 
@@ -200,7 +254,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
 
     normal_index = np.random.choice(normal_index, int(len(normal_index) * 0.5), replace=False)
     if (debug_mode == 1):
-        cmfunc.plot_data_all('Normal Choosing Result',
+        cmfunc.plot_data_all('graph/' + data_file + '/Normal Choosing Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [normal_index, raw_dta.value[normal_index]]],
                              ['lines', 'markers'], ['a', 'b'])
@@ -228,7 +282,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
     #### Draw step result ####
 
     if debug_mode == 1:
-        cmfunc.plot_data('Final Result',
+        cmfunc.plot_data('graph/' + data_file + '/Final Result',
                          [raw_dta.value, result_dta_bayes.anomaly_score, breakpoint_candidates,
                           result_dta_relativeE.anomaly_score, result_dta_skyline.anomaly_score,
                           result_dta_numenta.anomaly_score, result_dta_contextOSE.anomaly_score, final_score], [],
@@ -249,7 +303,8 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
         #                   'Our Result[720:800]'),
         #                  ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
         #                   'Numenta Result', 'ContextOSE Result', 'Our Result'])
-        cmfunc.plot_data('Step Result', [raw_dta.value, backup_draw.anomaly_score, Y, Z, final_score], [],
+        cmfunc.plot_data('graph/' + data_file + '/Step Result',
+                         [raw_dta.value, backup_draw.anomaly_score, Y, Z, final_score], [],
                          (
                              'Raw Data', 'Metric of Score', 'Spreading Anomaly Score', 'Spreading Normal Score',
                              'Final Score'),
@@ -258,12 +313,12 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
 
     ### Find potential anomaly point
     std_final_point = np.std(final_score)
-    #anomaly_set = [i for i, v in enumerate(final_score) if v > 3 * std_final_point]
+    # anomaly_set = [i for i, v in enumerate(final_score) if v > 3 * std_final_point]
     anomaly_set = [i for i, v in enumerate(final_score) if v > 0]
 
     # draw the whole data with potential anomaly point.
     if debug_mode == 1:
-        cmfunc.plot_data_all('Potential Final Result',
+        cmfunc.plot_data_all('graph/' + data_file + '/Potential Final Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value], [anomaly_set, raw_dta.value[anomaly_set]]],
                              ['lines', 'markers'], ('Raw Data', 'High Potential Anomaly'))
 
@@ -355,11 +410,11 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
 
     # # Plot the grouping process.
     if debug_mode == 1:
-        cmfunc.plot_data_all('Grouping Anomaly Points Result', Grouping_Anomaly_Points_Result,
+        cmfunc.plot_data_all('graph/' + data_file + '/Grouping Anomaly Points Result', Grouping_Anomaly_Points_Result,
                              Grouping_Anomaly_Points_Result_type, bar_group_name)
 
         # Plot the comparasion of std.
-        cmfunc.plot_data_barchart("Anomaly Detection using Standard Deviation Changing",
+        cmfunc.plot_data_barchart('graph/' + data_file + '/Anomaly Detection using Standard Deviation Changing',
                                   [[bar_group_name, std_example_data], [bar_group_name, std_example_outer]],
                                   name=['With potential anomaly', 'Non potential anomaly'])
     return np.mean([result_f, result_f_AL])

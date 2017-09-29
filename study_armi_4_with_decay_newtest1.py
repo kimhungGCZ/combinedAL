@@ -10,6 +10,7 @@ from sets import Set
 from sklearn.neighbors import DistanceMetric
 import threading
 import time
+import os
 
 import detection_engine as engine
 
@@ -26,9 +27,11 @@ def getCSVData(dataPath):
     return data
 
 
-DATA_FILE = 'dta_tsing' #100
-#DATA_FILE = 'data_1B3B8D' #100
+#DATA_FILE = 'dta_tsing' #100
+DATA_FILE = 'data_1B3B8D' #100
 #DATA_FILE = 'data_1B3AEA'
+#DATA_FILE = 'data_1B3B2F'
+#DATA_FILE = 'data_2004DF'
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -42,6 +45,8 @@ DATA_FILE = 'dta_tsing' #100
 #       engine.anomaly_detection(self.result_dta, self.raw_dta, self.file_name)
 #       # Free lock to release next thread
 #       threadLock.release()
+if not os.path.exists('graph/' + DATA_FILE):
+    os.makedirs('graph/' + DATA_FILE)
 start = time.time()
 dataPath_result_bayes = './results/bayesChangePt/realKnownCause/bayesChangePt_' + DATA_FILE + '.csv'
 dataPath_result_relativeE = './results/relativeEntropy/realKnownCause/relativeEntropy_' + DATA_FILE + '.csv'
