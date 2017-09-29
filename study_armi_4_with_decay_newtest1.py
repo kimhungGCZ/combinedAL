@@ -26,8 +26,9 @@ def getCSVData(dataPath):
     return data
 
 
-#DATA_FILE = 'dta_tsing'
-DATA_FILE = 'data_1B3B8D'
+DATA_FILE = 'dta_tsing' #100
+#DATA_FILE = 'data_1B3B8D' #100
+#DATA_FILE = 'data_1B3AEA'
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -66,9 +67,9 @@ raw_dta = getCSVData(dataPath_raw) if dataPath_raw else None
 result_dta_numenta.anomaly_score[0:150] = np.min(result_dta_numenta.anomaly_score)
 
 # dao ham bac 1
-der = cmfunc.change_after_k_seconds(raw_dta.value, k=1)
+#der = cmfunc.change_after_k_seconds(raw_dta.value, k=1)
 # dao ham bac 2
-sec_der = cmfunc.change_after_k_seconds(der, k=1)
+sec_der = cmfunc.change_after_k_seconds_with_abs(raw_dta.value, k=1)
 
 median_sec_der = np.median(sec_der)
 std_sec_der = np.std(sec_der)
@@ -79,7 +80,6 @@ breakpoint_candidates = list(map(
 breakpoint_candidates = (breakpoint_candidates - np.min(breakpoint_candidates)) / (
     np.max(breakpoint_candidates) - np.min(breakpoint_candidates))
 
-breakpoint_candidates = np.insert(breakpoint_candidates, 0, 0)
 breakpoint_candidates = np.insert(breakpoint_candidates, 0, 0)
 # result_dta = result_dta_numenta[150:400].copy()
 result_dta = result_dta_numenta.copy()
@@ -138,30 +138,30 @@ final_f = []
 final_combination = []
 print "################## SOLELY SCORING STATE-OF-THE-ART ALGORITHMS ################################"
 engine.calculate_point(DATA_FILE)
-print "################## BUILDING THE METRIC WITH DEFAULT DECAY = 0.05 ################################"
+#print "################## BUILDING THE METRIC WITH DEFAULT DECAY = 0.05 ################################"
 ################## BUILDING THE METRIC ################################
-for index, value in enumerate(score_matrix):
-    start_main_al = time.time()
-    new_data = result_dta_numenta.copy()
-    new_data.anomaly_score = value
-    # engine.anomaly_detection(result_dta, raw_dta)
-    async_result = pool.apply_async(engine.anomaly_detection,
-                                    (new_data, raw_dta, name_coff_metrix[index], 0.05, DATA_FILE, 0))  # tuple of args for foo
-    return_val = async_result.get()
-    final_f.append(return_val)
-    final_combination.append(name_coff_metrix[index])
-    end_main_al = time.time()
-    print("Execution time: {}".format(end_main_al - start_main_al));
-    print("_________________________________________________________________________________________")
+# for index, value in enumerate(score_matrix):
+#     start_main_al = time.time()
+#     new_data = result_dta_numenta.copy()
+#     new_data.anomaly_score = value
+#     # engine.anomaly_detection(result_dta, raw_dta)
+#     async_result = pool.apply_async(engine.anomaly_detection,
+#                                     (new_data, raw_dta, name_coff_metrix[index], 0.05, DATA_FILE, 0))  # tuple of args for foo
+#     return_val = async_result.get()
+#     final_f.append(return_val)
+#     final_combination.append(name_coff_metrix[index])
+#     end_main_al = time.time()
+#     print("Execution time: {}".format(end_main_al - start_main_al));
+#     print("_________________________________________________________________________________________")
 
-final_index = np.argsort(final_f)[-1]
-filed_name = final_combination[final_index]
+# final_index = np.argsort(final_f)[-1]
+# filed_name = final_combination[final_index]
 
-print "%%%%%%%%%%%%%%%%%%%%%%%%______BEST CHOICE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-print "Metric %d: %f * %s + %f * %s " % (final_index, filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
+# print "%%%%%%%%%%%%%%%%%%%%%%%%______BEST CHOICE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+# print "Metric %d: %f * %s + %f * %s " % (final_index, filed_name[1][0], filed_name[0][0], filed_name[1][1], filed_name[0][1])
 
 ############### To debug specific combination:############################
-#final_index = 6
+final_index = 0
 alpha = 0.05
 print("Decay Value: %f" % alpha)
 new_data = result_dta_numenta.copy()
@@ -173,20 +173,20 @@ print("Execution time: {}".format(end_main_al - start_main_al));
 print("_________________________________________________________________________________________")
 print "%%%%%%%%%%%%%%%%%%%%%%%%______TESTING THE DECAY VALUE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 ####### TEST THE DECAY VALUE
-alpha = 0.01
-while alpha < 0.5:
-    print("Decay Value: %f" %alpha)
-    new_data = result_dta_numenta.copy()
-    new_data.anomaly_score = score_matrix[final_index]
-    start_main_al = time.time()
-    engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 0)
-    end_main_al = time.time()
-    print("Execution time: {}".format(end_main_al - start_main_al));
-    print("_________________________________________________________________________________________")
-    if alpha < 0.1:
-        alpha = alpha + 0.01
-    else:
-        alpha = alpha + 0.05
+# alpha = 0.01
+# while alpha < 0.5:
+#     print("Decay Value: %f" %alpha)
+#     new_data = result_dta_numenta.copy()
+#     new_data.anomaly_score = score_matrix[final_index]
+#     start_main_al = time.time()
+#     engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 0)
+#     end_main_al = time.time()
+#     print("Execution time: {}".format(end_main_al - start_main_al));
+#     print("_________________________________________________________________________________________")
+#     if alpha < 0.1:
+#         alpha = alpha + 0.01
+#     else:
+#         alpha = alpha + 0.05
 
 
 end = time.time()

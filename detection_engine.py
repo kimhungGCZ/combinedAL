@@ -14,8 +14,8 @@ from numpy import mean, absolute
 
 warnings.simplefilter('ignore')
 
-#groud_trust = [[350, 832], [732, 733, 734, 735, 736, 755, 762, 773, 774, 795]]
-groud_trust = [[581],[435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418, 1423]]
+groud_trust = [[350, 832], [732, 733, 734, 735, 736, 755, 762, 773, 774, 795]]
+#groud_trust = [[581,1536],[435, 460, 471, 557, 558, 559, 560, 561, 562, 563, 564, 570, 571, 572, 573, 574, 1174, 1175, 1383, 1418, 1423]]
 
 
 def getCSVData(dataPath):
@@ -169,14 +169,24 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
     # dt=DistanceMetric.get_metric('pyfunc',func=mydist)
     tree = nb.KDTree(X, leaf_size=20)
     # tree = nb.BallTree(X, leaf_size=20, metric=dt)
-
+    potential_anomaly = []
     # Calculate Y
     for anomaly_point in anomaly_index:
-        anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point, limit_size),
-                                     dtype=np.int32)
-        for NN_pair in anomaly_neighboor:
-            Y[NN_pair[1]] = Y[NN_pair[1]] + result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha if \
-                result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha > 0 else Y[NN_pair[1]]
+        if anomaly_point - 1 not in potential_anomaly:
+
+            anomaly_neighboor_detect = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point - 1, limit_size),
+                                         dtype=np.int32)
+            if len(set(anomaly_neighboor_detect[:,1]).intersection(potential_anomaly)) == 0:
+                anomaly_neighboor = np.array(cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point, limit_size),
+                                             dtype=np.int32)
+                potential_anomaly.extend([x[1] for x in anomaly_neighboor])
+                for NN_pair in anomaly_neighboor:
+                    Y[NN_pair[1]] = Y[NN_pair[1]] + result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha if \
+                        result_dta['anomaly_score'][anomaly_point] - NN_pair[0] * alpha > 0 else Y[NN_pair[1]]
+            else:
+                result_dta.anomaly_score[anomaly_point] = 0
+        else:
+            result_dta.anomaly_score[anomaly_point] = 0
 
     backup_draw = result_dta.copy()
 
@@ -248,7 +258,8 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
 
     ### Find potential anomaly point
     std_final_point = np.std(final_score)
-    anomaly_set = [i for i, v in enumerate(final_score) if v > 3 * std_final_point]
+    #anomaly_set = [i for i, v in enumerate(final_score) if v > 3 * std_final_point]
+    anomaly_set = [i for i, v in enumerate(final_score) if v > 0]
 
     # draw the whole data with potential anomaly point.
     if debug_mode == 1:
@@ -297,7 +308,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, data_file='dta_tsi
                                            z not in list_of_anomaly)]) + list(
                 raw_dta.value.values[list(
                     z for z in range(int(max(detect_pattern) + 1), int(max(detect_pattern) + 4)) if
-                    z not in list_of_anomaly)]))]
+                    z not in list_of_anomaly and z < len(raw_dta.value.values))]))]
 
         in_std_with_Anomaly = np.std(
             example_data + list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern) + 1)]))
