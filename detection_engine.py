@@ -89,7 +89,7 @@ def calculate_point(data_file, groud_trust):
         detected_result = list([j for j, jvalue in enumerate(i[0]) if jvalue > 3 * std_of_i])
         result_precision_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(
             set(detected_result)) if len(set(detected_result)) != 0 else 0
-        result_recall_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(groud_trust[1]))
+        result_recall_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(groud_trust[1])) if len(set(groud_trust[1])) != 0 else 0
         result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
                                                                                                                           result_precision_AL + result_recall_AL) != 0 else 0
         print "Algorithm %s: " % (i[1])
@@ -175,7 +175,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [groud_trust[1], raw_dta.value[groud_trust[1]]],
                               [groud_trust[0], raw_dta.value[groud_trust[0]]]],
-                             ['lines', 'markers', 'markers'], ['circle', 'circle'],
+                             ['lines', 'markers', 'markers'], [None,'circle', 'circle'],
                              ['Raw data', 'Labeled Anomaly Point', 'Labeled Change Point'])
 
         cmfunc.plot_data_all('graph/' + data_file + '/Abnormal Choosing Result',
@@ -224,12 +224,13 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
                 else:
                     result_dta.anomaly_score[anomaly_point] = 0
         else:
+            temp_X = list(map(lambda x: [x, result_dta.values[x][1]], np.arange(anomaly_point)))
+            # dt=DistanceMetric.get_metric('pyfunc',func=mydist)
+            temp_tree = nb.KDTree(temp_X, leaf_size=20)
             anomaly_neighboor_detect = np.array(
-                cmfunc.find_inverneghboor_of_point(tree, X, anomaly_point - 1, limit_size),
+                cmfunc.find_inverneghboor_of_point(temp_tree, temp_X, anomaly_point - 1, limit_size),
                 dtype=np.int32)
-            consider_point = np.max(
-                [i for i in list(set(range(0, anomaly_point - 1)).difference(set(anomaly_neighboor_detect[:, 1]))) if
-                 i not in potential_anomaly])
+            consider_point = np.max([i for i in list(set(range(0, anomaly_point - 1)).difference(set(anomaly_neighboor_detect[:, 1]))) if i not in potential_anomaly])
 
             if (abs(raw_dta.value.values[anomaly_point] - raw_dta.value.values[
                 consider_point]) - median_sec_der - std_sec_der > 0):
@@ -258,7 +259,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
         cmfunc.plot_data_all('graph/' + data_file + '/Normal Choosing Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
                               [normal_index, raw_dta.value[normal_index]]],
-                             ['lines', 'markers'],['circle'], ['a', 'b'])
+                             ['lines', 'markers'],[None, 'circle'], ['a', 'b'])
 
     # Calculate Z
     for normal_point in normal_index:
@@ -292,18 +293,6 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
                           'Numenta Result', 'ContextOSE Result', 'Our Result'),
                          ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
                           'Numenta Result', 'ContextOSE Result', 'Our Result'])
-        # cmfunc.plot_data('Zoomed Final Result',
-        #                  [raw_dta.value[720:800], result_dta_bayes.anomaly_score[720:800],
-        #                   breakpoint_candidates[720:800],
-        #                   result_dta_relativeE.anomaly_score[720:800], result_dta_skyline.anomaly_score[720:800],
-        #                   result_dta_numenta.anomaly_score[720:800], result_dta_contextOSE.anomaly_score[720:800],
-        #                   final_score[720:800]], [],
-        #                  ('Raw Data[720:800]', 'Bayes Result[720:800]', 'EDGE Result [720:800]',
-        #                   'Relative Entropy Result [720:800]', 'Skyline Result [720:800]', 'Numenta Result[720:800]',
-        #                   'ContextOSE Result [720:800]',
-        #                   'Our Result[720:800]'),
-        #                  ['Raw Data', 'Bayes Result', 'EDGE Result', 'Relative Entropy Result', 'Skyline Result',
-        #                   'Numenta Result', 'ContextOSE Result', 'Our Result'])
         cmfunc.plot_data('graph/' + data_file + '/Step Result',
                          [raw_dta.value, backup_draw.anomaly_score, Y, Z, final_score], [],
                          (
@@ -321,7 +310,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
     if debug_mode == 1:
         cmfunc.plot_data_all('graph/' + data_file + '/Potential Final Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value], [anomaly_set, raw_dta.value[anomaly_set]]],
-                             ['lines', 'markers'],['circle'], ('Raw Data', 'High Potential Anomaly'))
+                             ['lines', 'markers'],[None, 'circle'], ('Raw Data', 'High Potential Anomaly'))
 
     # The algorithm to seperate anomaly point and change point.
     X = list(map(lambda x: [x, x], np.arange(len(result_dta.values))))
@@ -382,14 +371,14 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
 
     result_precision = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(
         set(final_changepoint_set)) if len(set(final_changepoint_set)) != 0 else 0
-    result_recall = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(groud_trust[0]))
+    result_recall = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(groud_trust[0])) if len(set(groud_trust[0])) != 0 else 100
     result_f = float(2 * result_precision * result_recall / (result_precision + result_recall)) if (
                                                                                                        result_precision + result_recall) != 0 else 0
     ####################################################################################################################
     result_precision_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
         set(detect_final_result[1])) if len(set(detect_final_result[1])) != 0 else 0
     result_recall_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
-        set(groud_trust[1]))
+        set(groud_trust[1])) if len(set(groud_trust[1])) != 0 else 100
     result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
                                                                                                                       result_precision_AL + result_recall_AL) != 0 else 0
     ##################################################################################################
