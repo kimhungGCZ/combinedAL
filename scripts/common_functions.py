@@ -250,11 +250,11 @@ def plot_data(charName,data, mode, title = ('Plot 1', 'Plot 2', 'Plot 3', 'Plot 
     # Working Offline
     plotly.offline.plot(fig, filename=charName)
 
-def plot_data_all(charName,data, mode,name):
+def plot_data_all(charName,data, mode,symbol,name):
     fig = []
     for index,in_data in enumerate(data):
         trace1 = go.Scatter(x=in_data[0], y=in_data[1], name = name[index], mode  = 'lines' if mode[index] == None else mode[index], marker = dict(
-        size = 15) if mode[index] == 'markers' else dict())
+        size = 15, symbol = symbol[index] if symbol[index] != None else "circle") if mode[index] == 'markers' else dict())
         fig.append(trace1)
 
     layout = dict(title=charName

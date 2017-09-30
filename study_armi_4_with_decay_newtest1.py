@@ -11,6 +11,7 @@ from sklearn.neighbors import DistanceMetric
 import threading
 import time
 import os
+import json
 
 import detection_engine as engine
 
@@ -27,11 +28,12 @@ def getCSVData(dataPath):
     return data
 
 
-#DATA_FILE = 'dta_tsing' #100
-DATA_FILE = 'data_1B3B8D' #100
-#DATA_FILE = 'data_1B3AEA'
-#DATA_FILE = 'data_1B3B2F'
-#DATA_FILE = 'data_2004DF'
+with open('data.json') as data_file:
+    configure_data = json.load(data_file)
+DATA_SET = configure_data[0]
+DATA_FILE = str(DATA_SET['file_name']);
+GROUND_TRUTH = list(DATA_SET['groud'])
+
 
 # class myThread (threading.Thread):
 #    def __init__(self, result_dta, raw_dta, file_name):
@@ -142,7 +144,7 @@ pool = ThreadPool(processes=4)
 final_f = []
 final_combination = []
 print "################## SOLELY SCORING STATE-OF-THE-ART ALGORITHMS ################################"
-engine.calculate_point(DATA_FILE)
+engine.calculate_point(DATA_FILE, GROUND_TRUTH)
 #print "################## BUILDING THE METRIC WITH DEFAULT DECAY = 0.05 ################################"
 ################## BUILDING THE METRIC ################################
 # for index, value in enumerate(score_matrix):
@@ -172,7 +174,7 @@ print("Decay Value: %f" % alpha)
 new_data = result_dta_numenta.copy()
 new_data.anomaly_score = score_matrix[final_index]
 start_main_al = time.time()
-engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, DATA_FILE, 1)
+engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, GROUND_TRUTH, DATA_FILE , 0)
 end_main_al = time.time()
 print("Execution time: {}".format(end_main_al - start_main_al));
 print("_________________________________________________________________________________________")
