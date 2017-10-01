@@ -89,7 +89,7 @@ def calculate_point(data_file, groud_trust):
         detected_result = list([j for j, jvalue in enumerate(i[0]) if jvalue > 3 * std_of_i])
         result_precision_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(
             set(detected_result)) if len(set(detected_result)) != 0 else 0
-        result_recall_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(groud_trust[1]))
+        result_recall_AL = 100 * len(set(detected_result).intersection(set(groud_trust[1]))) / len(set(groud_trust[1])) if len(set(groud_trust[1])) != 0 else 100
         result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
                                                                                                                           result_precision_AL + result_recall_AL) != 0 else 0
         print "Algorithm %s: " % (i[1])
@@ -307,7 +307,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
                                            z not in list_of_anomaly)]) + list(
                 raw_dta.value.values[list(
                     z for z in range(int(max(detect_pattern) + 1), int(max(detect_pattern) + 4)) if
-                    z not in list_of_anomaly)]))]
+                    z not in list_of_anomaly and z < len(raw_dta.value.values))]))]
 
         in_std_with_Anomaly = np.std(
             example_data + list(raw_dta.value.values[int(min(detect_pattern)): int(max(detect_pattern) + 1)]))
