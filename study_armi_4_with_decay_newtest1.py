@@ -122,23 +122,6 @@ for index, i in enumerate(raw_matrix):
         name_coff_metrix.append(
             [[raw_name_matrix[index][0], raw_name_matrix[index][1]], [in_cof_matrix[0], in_cof_matrix[1]]])
 
-# score_matrix = np.multiply(raw_matrix,cof_matrix)
-# result_dta.anomaly_score = 0.3 * result_dta_contextOSE.anomaly_score + 0.7 * breakpoint_candidates + 0.0 * result_dta_bayes.anomaly_score
-#
-# threadLock = threading.Lock()
-# threads = []
-#
-# for index, value in enumerate(score_matrix):
-#    new_data = result_dta_numenta.copy()
-#    new_data.anomaly_score = value
-#    #engine.anomaly_detection(result_dta, raw_dta)
-#    thread1 = myThread(new_data, raw_dta, name_coff_metrix[index])
-#    thread1.start()
-#    threads.append(thread1)
-#
-# for t in threads:
-#     t.join()
-# print "Exiting Main Thread"
 from multiprocessing.pool import ThreadPool
 
 pool = ThreadPool(processes=4)
@@ -162,7 +145,24 @@ for index, value in enumerate(score_matrix):
     print("Execution time: {}".format(end_main_al - start_main_al));
     print("_________________________________________________________________________________________")
 
+#final_f = [[100, 100, 100.0, 76, 100, 86.0], [100, 100, 100.0, 90, 100, 94.0], [50, 100, 66.0, 83, 50, 62.0], [50, 50, 50.0, 0, 0, 0], [50, 50, 50.0, 0, 0, 0], [100, 100, 100.0, 76, 100, 86.0], [100, 100, 100.0, 71, 100, 83.0], [40, 100, 57.0, 55, 50, 52.0], [40, 100, 57.0, 100, 50, 66.0], [25, 50, 33.0, 0, 0, 0], [100, 100, 100.0, 76, 100, 86.0], [100, 100, 100.0, 90, 100, 94.0], [12, 50, 19.0, 90, 100, 94.0], [9, 50, 15.0, 33, 20, 24.0], [0, 0, 0, 0, 0, 0], [33, 100, 49.0, 76, 100, 86.0], [40, 100, 57.0, 90, 100, 94.0], [100, 100, 100.0, 90, 100, 94.0], [33, 50, 39.0, 0, 0, 0], [50, 50, 50.0, 0, 0, 0], [33, 100, 49.0, 76, 100, 86.0], [33, 100, 49.0, 90, 100, 94.0], [28, 100, 43.0, 90, 100, 94.0], [33, 100, 49.0, 100, 10, 18.0], [25, 50, 33.0, 0, 0, 0], [33, 100, 49.0, 76, 100, 86.0], [28, 100, 43.0, 90, 100, 94.0], [15, 100, 26.0, 76, 100, 86.0], [11, 50, 18.0, 54, 60, 56.0], [0, 0, 0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [5, 50, 9.0, 0, 0, 0], [9, 50, 15.0, 0, 0, 0], [100, 50, 66.0, 0, 0, 0], [50, 50, 50.0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [5, 50, 9.0, 0, 0, 0], [14, 50, 21.0, 0, 0, 0], [25, 50, 33.0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [4, 50, 7.0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 final_index = np.argsort(final_f)[-1]
+
+# df = pd.DataFrame(columns=('1', '2', '3','4','5','6','11', '22', '33','44','55','66','111', '222', '333','444','555','666','1111', '2222', '3333','4444','5555','6666','10', '20', '30','40','50','60'))
+# tmp_array_1 = []
+# for index,value in enumerate(final_f):
+#     if (index == 0 or index % 5 != 0) and (index != len(final_f) -1):
+#         tmp_array_1.extend(value)
+#     elif index == len(final_f) -1:
+#         tmp_array_1.extend(value)
+#         df.loc[index / 5 + 1] = tmp_array_1
+#     else:
+#         df.loc[index/5] = tmp_array_1
+#         tmp_array_1 = []
+#         tmp_array_1.extend(value)
+#
+# df.to_csv('graph/' + DATA_FILE + '/resultLog.csv', index=False);
+
 filed_name = final_combination[final_index]
 
 print "%%%%%%%%%%%%%%%%%%%%%%%%______BEST CHOICE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -181,20 +181,20 @@ print("Execution time: {}".format(end_main_al - start_main_al));
 print("_________________________________________________________________________________________")
 print "%%%%%%%%%%%%%%%%%%%%%%%%______TESTING THE DECAY VALUE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 ###### TEST THE DECAY VALUE
-alpha = 0.01
-while alpha < 0.5:
-    print("Decay Value: %f" %alpha)
-    new_data = result_dta_numenta.copy()
-    new_data.anomaly_score = score_matrix[final_index]
-    start_main_al = time.time()
-    engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, GROUND_TRUTH, DATA_FILE, 0)
-    end_main_al = time.time()
-    print("Execution time: {}".format(end_main_al - start_main_al));
-    print("_________________________________________________________________________________________")
-    if alpha < 0.1:
-        alpha = alpha + 0.01
-    else:
-        alpha = alpha + 0.05
+# alpha = 0.01
+# while alpha < 0.5:
+#     print("Decay Value: %f" %alpha)
+#     new_data = result_dta_numenta.copy()
+#     new_data.anomaly_score = score_matrix[final_index]
+#     start_main_al = time.time()
+#     engine.anomaly_detection(new_data, raw_dta, name_coff_metrix[final_index], alpha, GROUND_TRUTH, DATA_FILE, 0)
+#     end_main_al = time.time()
+#     print("Execution time: {}".format(end_main_al - start_main_al));
+#     print("_________________________________________________________________________________________")
+#     if alpha < 0.1:
+#         alpha = alpha + 0.01
+#     else:
+#         alpha = alpha + 0.05
 
 
 end = time.time()

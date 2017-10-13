@@ -197,7 +197,7 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
     normal_index = [i for i, value in enumerate(result_dta['anomaly_score']) if
                     value <= np.percentile(result_dta['anomaly_score'], 20)]
 
-    normal_index = np.random.choice(normal_index, int(len(normal_index) * 0.5), replace=False)
+    #normal_index = np.random.choice(normal_index, int(len(normal_index) * 0.5), replace=False)
     if (debug_mode == 1):
         cmfunc.plot_data_all('graph/' + data_file + '/Normal Choosing Result',
                              [[range(0, len(raw_dta.value)), raw_dta.value],
