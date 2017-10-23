@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskName": "task-study_armi_4_with_decay_newtest1",
+      "appliesTo": "study_armi_4_with_decay_newtest1.py",
+      "type": "launch"
+    }
+  ]
+}
