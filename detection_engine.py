@@ -325,14 +325,14 @@ def anomaly_detection(result_dta, raw_dta, filed_name, alpha, groud_trust, data_
 
     result_precision = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(
         set(final_changepoint_set)) if len(set(final_changepoint_set)) != 0 else 0
-    result_recall = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(groud_trust[0]))
+    result_recall = 100 * len(set(final_changepoint_set).intersection(set(groud_trust[0]))) / len(set(groud_trust[0])) if len(set(groud_trust[0])) != 0 else 0
     result_f = float(2 * result_precision * result_recall / (result_precision + result_recall)) if (
                                                                                                        result_precision + result_recall) != 0 else 0
     ####################################################################################################################
     result_precision_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
         set(detect_final_result[1])) if len(set(detect_final_result[1])) != 0 else 0
     result_recall_AL = 100 * len(set(detect_final_result[1]).intersection(set(groud_trust[1]))) / len(
-        set(groud_trust[1]))
+        set(groud_trust[1])) if len(set(groud_trust[1])) != 0 else 0
     result_f_AL = float(2 * result_precision_AL * result_recall_AL / (result_precision_AL + result_recall_AL)) if (
                                                                                                                       result_precision_AL + result_recall_AL) != 0 else 0
     ##################################################################################################

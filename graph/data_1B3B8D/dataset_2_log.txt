@@ -1,0 +1,330 @@
+C:\Python27\lib\site-packages\statsmodels\compat\pandas.py:56: FutureWarning: The pandas.core.datetools module is deprecated and will be removed in a future version. Please use the pandas.tseries module instead.
+  from pandas.core import datetools
+################## SOLELY SCORING STATE-OF-THE-ART ALGORITHMS ################################
+Algorithm Bayes Algorithm:
+-------- Anomaly Detection: Precision: 46.000000 %, Recall: 33.000000 %, F-score: 38.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+Algorithm Relative Entropy Algorithm:
+-------- Anomaly Detection: Precision: 28.000000 %, Recall: 19.000000 %, F-score: 22.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+Algorithm EDGE Algorithm:
+-------- Anomaly Detection: Precision: 50.000000 %, Recall: 23.000000 %, F-score: 31.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+Algorithm Skyline Algorithm:
+-------- Anomaly Detection: Precision: 30.000000 %, Recall: 85.000000 %, F-score: 44.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+Algorithm Numenta Algorithm:
+-------- Anomaly Detection: Precision: 8.000000 %, Recall: 14.000000 %, F-score: 10.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+Algorithm ContextOSE Algorithm:
+-------- Anomaly Detection: Precision: 17.000000 %, Recall: 23.000000 %, F-score: 19.000000
+-------- Change Point Detection Detection: Precision: 0.000000 %, Recall: 0.000000 %, F-score: 0.000000
+-----------------------------------------------------------------------------------------------------------------------
+################## BUILDING THE METRIC WITH DEFAULT DECAY = 0.05 ################################
+Metric: 1.000000 * EDGE Algorithm + 0.000000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 20 %, Recall: 14 %, F: 16.000000
+Total Point: 8.000000
+Execution time: 12.7979998589
+_________________________________________________________________________________________
+Metric: 0.750000 * EDGE Algorithm + 0.250000 * Skyline Algorithm
+Change Point Detection - Precision: 14 %, Recall: 50 %, F: 21.000000
+Anomaly Detection - Precision: 75 %, Recall: 14 %, F: 23.000000
+Total Point: 22.000000
+Execution time: 9.5720000267
+_________________________________________________________________________________________
+Metric: 0.500000 * EDGE Algorithm + 0.500000 * Skyline Algorithm
+Change Point Detection - Precision: 16 %, Recall: 50 %, F: 24.000000
+Anomaly Detection - Precision: 100 %, Recall: 52 %, F: 68.000000
+Total Point: 46.000000
+Execution time: 9.95899987221
+_________________________________________________________________________________________
+Metric: 0.250000 * EDGE Algorithm + 0.750000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 90 %, F: 94.000000
+Total Point: 80.000000
+Execution time: 10.5360000134
+_________________________________________________________________________________________
+Metric: 0.000000 * EDGE Algorithm + 1.000000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 80 %, F: 88.000000
+Total Point: 77.000000
+Execution time: 10.7820000648
+_________________________________________________________________________________________
+Metric: 1.000000 * EDGE Algorithm + 0.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 20 %, Recall: 14 %, F: 16.000000
+Total Point: 8.000000
+Execution time: 12.8429999352
+_________________________________________________________________________________________
+Metric: 0.750000 * EDGE Algorithm + 0.250000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 9 %, Recall: 14 %, F: 10.000000
+Total Point: 5.000000
+Execution time: 3.10300016403
+_________________________________________________________________________________________
+Metric: 0.500000 * EDGE Algorithm + 0.500000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 25 %, Recall: 38 %, F: 30.000000
+Total Point: 15.000000
+Execution time: 3.24900007248
+_________________________________________________________________________________________
+Metric: 0.250000 * EDGE Algorithm + 0.750000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 25 %, Recall: 38 %, F: 30.000000
+Total Point: 15.000000
+Execution time: 3.27699995041
+_________________________________________________________________________________________
+Metric: 0.000000 * EDGE Algorithm + 1.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 15 %, Recall: 14 %, F: 14.000000
+Total Point: 7.000000
+Execution time: 3.30399990082
+_________________________________________________________________________________________
+Metric: 1.000000 * EDGE Algorithm + 0.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 20 %, Recall: 14 %, F: 16.000000
+Total Point: 8.000000
+Execution time: 12.7430000305
+_________________________________________________________________________________________
+Metric: 0.750000 * EDGE Algorithm + 0.250000 * ContextOSE Algorithm
+Change Point Detection - Precision: 16 %, Recall: 50 %, F: 24.000000
+Anomaly Detection - Precision: 66 %, Recall: 28 %, F: 39.000000
+Total Point: 31.500000
+Execution time: 3.81199979782
+_________________________________________________________________________________________
+Metric: 0.500000 * EDGE Algorithm + 0.500000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 75 %, Recall: 28 %, F: 40.000000
+Total Point: 20.000000
+Execution time: 3.93000006676
+_________________________________________________________________________________________
+Metric: 0.250000 * EDGE Algorithm + 0.750000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 28 %, F: 43.000000
+Total Point: 21.500000
+Execution time: 4.375
+_________________________________________________________________________________________
+Metric: 0.000000 * EDGE Algorithm + 1.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 19 %, F: 31.000000
+Total Point: 15.500000
+Execution time: 4.63500022888
+_________________________________________________________________________________________
+Metric: 1.000000 * Bayes Algorithm + 0.000000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 13.2430000305
+_________________________________________________________________________________________
+Metric: 0.750000 * Bayes Algorithm + 0.250000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 9.83699989319
+_________________________________________________________________________________________
+Metric: 0.500000 * Bayes Algorithm + 0.500000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 76 %, F: 86.000000
+Total Point: 43.000000
+Execution time: 10.2140002251
+_________________________________________________________________________________________
+Metric: 0.250000 * Bayes Algorithm + 0.750000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 100 %, F: 100.000000
+Total Point: 83.000000
+Execution time: 10.8289999962
+_________________________________________________________________________________________
+Metric: 0.000000 * Bayes Algorithm + 1.000000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 80 %, F: 88.000000
+Total Point: 77.000000
+Execution time: 11.0900001526
+_________________________________________________________________________________________
+Metric: 1.000000 * Bayes Algorithm + 0.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 13.4160001278
+_________________________________________________________________________________________
+Metric: 0.750000 * Bayes Algorithm + 0.250000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 2.96799993515
+_________________________________________________________________________________________
+Metric: 0.500000 * Bayes Algorithm + 0.500000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 66 %, Recall: 47 %, F: 54.000000
+Total Point: 27.000000
+Execution time: 3.23799991608
+_________________________________________________________________________________________
+Metric: 0.250000 * Bayes Algorithm + 0.750000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 54 %, Recall: 28 %, F: 36.000000
+Total Point: 18.000000
+Execution time: 3.34500002861
+_________________________________________________________________________________________
+Metric: 0.000000 * Bayes Algorithm + 1.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 15 %, Recall: 14 %, F: 14.000000
+Total Point: 7.000000
+Execution time: 3.26899981499
+_________________________________________________________________________________________
+Metric: 1.000000 * Bayes Algorithm + 0.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 13.2309999466
+_________________________________________________________________________________________
+Metric: 0.750000 * Bayes Algorithm + 0.250000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 4.36899995804
+_________________________________________________________________________________________
+Metric: 0.500000 * Bayes Algorithm + 0.500000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 4.44499993324
+_________________________________________________________________________________________
+Metric: 0.250000 * Bayes Algorithm + 0.750000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 4.52400016785
+_________________________________________________________________________________________
+Metric: 0.000000 * Bayes Algorithm + 1.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 19 %, F: 31.000000
+Total Point: 15.500000
+Execution time: 4.60199999809
+_________________________________________________________________________________________
+Metric: 1.000000 * Relative Entropy Algorithm + 0.000000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 44 %, Recall: 38 %, F: 40.000000
+Total Point: 20.000000
+Execution time: 12.986000061
+_________________________________________________________________________________________
+Metric: 0.750000 * Relative Entropy Algorithm + 0.250000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 83 %, Recall: 71 %, F: 76.000000
+Total Point: 38.000000
+Execution time: 9.86199998856
+_________________________________________________________________________________________
+Metric: 0.500000 * Relative Entropy Algorithm + 0.500000 * Skyline Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 76 %, F: 86.000000
+Total Point: 43.000000
+Execution time: 10.1570000648
+_________________________________________________________________________________________
+Metric: 0.250000 * Relative Entropy Algorithm + 0.750000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 100 %, F: 100.000000
+Total Point: 83.000000
+Execution time: 10.8259999752
+_________________________________________________________________________________________
+Metric: 0.000000 * Relative Entropy Algorithm + 1.000000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 80 %, F: 88.000000
+Total Point: 77.000000
+Execution time: 10.853000164
+_________________________________________________________________________________________
+Metric: 1.000000 * Relative Entropy Algorithm + 0.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 44 %, Recall: 38 %, F: 40.000000
+Total Point: 20.000000
+Execution time: 13.1779999733
+_________________________________________________________________________________________
+Metric: 0.750000 * Relative Entropy Algorithm + 0.250000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 46 %, Recall: 28 %, F: 34.000000
+Total Point: 17.000000
+Execution time: 2.94199991226
+_________________________________________________________________________________________
+Metric: 0.500000 * Relative Entropy Algorithm + 0.500000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 35 %, Recall: 28 %, F: 31.000000
+Total Point: 15.500000
+Execution time: 3.25699996948
+_________________________________________________________________________________________
+Metric: 0.250000 * Relative Entropy Algorithm + 0.750000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 21 %, Recall: 33 %, F: 25.000000
+Total Point: 12.500000
+Execution time: 3.38900017738
+_________________________________________________________________________________________
+Metric: 0.000000 * Relative Entropy Algorithm + 1.000000 * Numenta Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 15 %, Recall: 14 %, F: 14.000000
+Total Point: 7.000000
+Execution time: 3.29800009727
+_________________________________________________________________________________________
+Metric: 1.000000 * Relative Entropy Algorithm + 0.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 44 %, Recall: 38 %, F: 40.000000
+Total Point: 20.000000
+Execution time: 12.9189999104
+_________________________________________________________________________________________
+Metric: 0.750000 * Relative Entropy Algorithm + 0.250000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 50 %, Recall: 38 %, F: 43.000000
+Total Point: 21.500000
+Execution time: 4.20399999619
+_________________________________________________________________________________________
+Metric: 0.500000 * Relative Entropy Algorithm + 0.500000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 88 %, Recall: 38 %, F: 53.000000
+Total Point: 26.500000
+Execution time: 4.21300005913
+_________________________________________________________________________________________
+Metric: 0.250000 * Relative Entropy Algorithm + 0.750000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 38 %, F: 55.000000
+Total Point: 27.500000
+Execution time: 4.55499982834
+_________________________________________________________________________________________
+Metric: 0.000000 * Relative Entropy Algorithm + 1.000000 * ContextOSE Algorithm
+Change Point Detection - Precision: 0 %, Recall: 0 %, F: 0.000000
+Anomaly Detection - Precision: 100 %, Recall: 19 %, F: 31.000000
+Total Point: 15.500000
+Execution time: 4.58800005913
+_________________________________________________________________________________________
+%%%%%%%%%%%%%%%%%%%%%%%%______BEST CHOICE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Metric 18: 0.250000 * Bayes Algorithm + 0.750000 * Skyline Algorithm
+Decay Value: 0.050000
+This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+[ (3,1) x3,y3 ]
+[ (4,1) x4,y4 ]
+[ (5,1) x5,y5 ]
+[ (6,1) x6,y6 ]
+[ (7,1) x7,y7 ]
+[ (8,1) x8,y8 ]
+
+This is the format of your plot grid:
+[ (1,1) x1,y1 ]
+[ (2,1) x2,y2 ]
+[ (3,1) x3,y3 ]
+[ (4,1) x4,y4 ]
+[ (5,1) x5,y5 ]
+
+Metric: 0.250000 * Bayes Algorithm + 0.750000 * Skyline Algorithm
+Change Point Detection - Precision: 100 %, Recall: 50 %, F: 66.000000
+Anomaly Detection - Precision: 100 %, Recall: 100 %, F: 100.000000
+Total Point: 83.000000
+Execution time: 16.3069999218
+_________________________________________________________________________________________
+%%%%%%%%%%%%%%%%%%%%%%%%______TESTING THE DECAY VALUE______%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Total time: 349.190999985
+Press any key to continue . . .
+
+
+
+
+
+
+
+
