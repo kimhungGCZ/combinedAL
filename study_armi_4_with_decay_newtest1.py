@@ -30,7 +30,7 @@ def getCSVData(dataPath):
 
 with open('data.json') as data_file:
     configure_data = json.load(data_file)
-DATA_SET = configure_data[4]
+DATA_SET = configure_data[2]
 DATA_FILE = str(DATA_SET['file_name']);
 GROUND_TRUTH = list(DATA_SET['groud'])
 
